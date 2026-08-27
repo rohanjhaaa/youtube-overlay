@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920,height=240,initial-scale=1">
+<title>HadesIsNotLive - StreamChamp Overlay</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;width:1920px;height:240px;background:transparent;overflow:hidden}
+  body{font-family:Arial,Helvetica,sans-serif;color:#fff}
+
+  .overlay{
+    position:relative;width:1920px;height:240px;
+    overflow:hidden;background:transparent;
+  }
+
+  /* Main lower-third */
+  .bar{
+    position:absolute;left:0;right:0;bottom:0;height:108px;
+    background:linear-gradient(90deg,
+      rgba(5,4,14,.96) 0%,
+      rgba(17,8,35,.94) 28%,
+      rgba(10,6,24,.92) 72%,
+      rgba(5,4,14,.96) 100%);
+    border-top:2px solid rgba(159,82,255,.9);
+    box-shadow:0 -3px 22px rgba(133,45,255,.42), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .bar:before{
+    content:"";position:absolute;left:0;top:0;width:100%;height:2px;
+    background:linear-gradient(90deg,transparent,#8d45ff,#fff,#8d45ff,transparent);
+    background-size:200% 100%;animation:sweep 3s linear infinite;
+  }
+
+  /* Angled accents */
+  .edge{
+    position:absolute;bottom:0;height:108px;width:120px;
+    background:linear-gradient(135deg,transparent 45%,rgba(130,49,255,.75) 46%,rgba(130,49,255,.08) 60%,transparent 61%);
+    opacity:.75
+  }
+  .edge.left{left:0}.edge.right{right:0;transform:scaleX(-1)}
+
+  /* Animated particles */
+  .particle{position:absolute;width:3px;height:3px;border-radius:50%;
+    background:#c9a7ff;box-shadow:0 0 8px #a15cff;opacity:0;
+    animation:float 4s linear infinite}
+  .p1{left:16%;bottom:28px;animation-delay:.2s}.p2{left:31%;bottom:60px;animation-delay:1.2s}
+  .p3{left:55%;bottom:34px;animation-delay:2s}.p4{left:73%;bottom:55px;animation-delay:.8s}
+  .p5{left:88%;bottom:24px;animation-delay:2.8s}.p6{left:44%;bottom:18px;animation-delay:1.7s}
+
+  /* Hades emblem/character */
+  .hades{
+    position:absolute;left:72px;bottom:35px;width:225px;height:205px;z-index:5;
+    filter:drop-shadow(0 0 12px rgba(121,54,255,.9));
+  }
+  .halo{
+    position:absolute;left:22px;top:10px;width:180px;height:180px;border-radius:50%;
+    border:2px solid rgba(159,82,255,.38);
+    box-shadow:0 0 25px rgba(121,54,255,.32),inset 0 0 22px rgba(121,54,255,.15);
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  .head{
+    position:absolute;left:66px;top:30px;width:112px;height:115px;
+    background:linear-gradient(145deg,#3b3446,#17131f 70%);
+    border-radius:46% 46% 42% 42%;
+    border:2px solid #8c5bd6;
+    box-shadow:inset -15px -12px 25px rgba(0,0,0,.8),0 0 16px rgba(120,55,255,.35);
+  }
+  .crown{
+    position:absolute;left:45px;top:8px;width:150px;height:48px;
+    border:4px solid #a77cff;border-bottom:0;border-radius:55% 55% 0 0;
+    transform:skewX(-8deg);
+    box-shadow:0 0 14px rgba(147,78,255,.8);
+  }
+  .horn{position:absolute;width:44px;height:64px;border:5px solid #b88cff;border-bottom:0;border-radius:80% 20% 0 0}
+  .horn.l{left:35px;top:0;transform:rotate(-28deg)}.horn.r{right:35px;top:0;transform:scaleX(-1) rotate(-28deg)}
+  .eye{position:absolute;top:70px;width:29px;height:10px;background:#f2d9ff;
+    box-shadow:0 0 12px #b56cff;clip-path:polygon(0 50%,100% 0,82% 100%,18% 85%)}
+  .eye.l{left:77px;transform:rotate(-8deg)}.eye.r{right:77px;transform:scaleX(-1) rotate(-8deg)}
+  .brow{position:absolute;top:61px;width:39px;height:6px;background:#0b0810}
+  .brow.l{left:73px;transform:rotate(-12deg)}.brow.r{right:73px;transform:rotate(12deg)}
+  .beard{position:absolute;left:81px;top:111px;width:82px;height:70px;
+    background:linear-gradient(145deg,#30293a,#0e0b13);clip-path:polygon(8% 0,92% 0,100% 42%,73% 100%,50% 74%,27% 100%,0 42%);
+    border:1px solid #6c438e}
+  .armor{position:absolute;left:34px;bottom:0;width:160px;height:75px;
+    background:linear-gradient(180deg,#30213d,#0b0811);
+    clip-path:polygon(18% 0,82% 0,100% 100%,0 100%);
+    border:2px solid #794cc0;
+  }
+  .flame{position:absolute;left:104px;bottom:28px;width:20px;height:35px;
+    background:linear-gradient(#fff,#b76aff 45%,transparent);clip-path:polygon(50% 0,100% 45%,75% 100%,25% 100%,0 45%);
+    filter:drop-shadow(0 0 8px #a653ff);animation:flame .8s ease-in-out infinite alternate}
+
+  .brand{
+    position:absolute;left:330px;bottom:30px;z-index:6;
+    text-shadow:0 0 12px rgba(151,78,255,.75);
+  }
+  .name{
+    font-size:38px;font-weight:900;letter-spacing:2px;
+    background:linear-gradient(90deg,#fff,#d6b6ff,#9d5dff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .tag{
+    margin-top:4px;font-size:15px;letter-spacing:5px;color:#bda8d8;
+    text-transform:uppercase;
+  }
+
+  .live{
+    position:absolute;right:90px;bottom:34px;z-index:6;
+    display:flex;align-items:center;gap:12px;
+    font-weight:800;letter-spacing:3px;font-size:18px;
+  }
+  .dot{width:13px;height:13px;border-radius:50%;background:#ff3b72;
+    box-shadow:0 0 8px #ff3b72,0 0 18px rgba(255,59,114,.75);
+    animation:blink 1.2s ease-in-out infinite}
+  .line{width:1px;height:30px;background:rgba(255,255,255,.2)}
+  .status{color:#e6d8f7}
+
+  @keyframes sweep{to{background-position:200% 0}}
+  @keyframes pulse{50%{transform:scale(1.045);opacity:.72}}
+  @keyframes blink{50%{opacity:.35;transform:scale(.75)}}
+  @keyframes flame{to{transform:scaleY(1.18) scaleX(.85);opacity:.8}}
+  @keyframes float{0%{transform:translateY(15px) scale(.5);opacity:0}20%{opacity:.7}100%{transform:translateY(-70px) scale(1);opacity:0}}
+
+  @media(max-width:1920px){html,body{width:100vw;height:auto}.overlay{transform-origin:top left}}
+</style>
+</head>
+<body>
+<div class="overlay">
+  <div class="hades" aria-label="Aggressive Hades">
+    <div class="halo"></div>
+    <div class="horn l"></div><div class="horn r"></div><div class="crown"></div>
+    <div class="head">
+      <div class="brow l"></div><div class="brow r"></div>
+      <div class="eye l"></div><div class="eye r"></div>
+      <div class="beard"></div>
+    </div>
+    <div class="armor"></div><div class="flame"></div>
+  </div>
+
+  <div class="particle p1"></div><div class="particle p2"></div><div class="particle p3"></div>
+  <div class="particle p4"></div><div class="particle p5"></div><div class="particle p6"></div>
+
+  <div class="bar">
+    <div class="edge left"></div><div class="edge right"></div>
+    <div class="brand">
+      <div class="name">HADESISNOTLIVE</div>
+      <div class="tag">ENTER THE UNDERWORLD</div>
+    </div>
+    <div class="live"><span class="dot"></span><span>LIVE</span><span class="line"></span><span class="status">STREAMING</span></div>
+  </div>
+</div>
+</body>
+</html>
